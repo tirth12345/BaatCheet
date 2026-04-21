@@ -602,10 +602,31 @@ export default function VideoChatRoom() {
   };
 
   // Export PDF
-  const exportPDF = () => {
+  const exportPDF = async () => {
     if (!roomId) return;
-    const exportUrl = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/video-rooms/${roomId}/export-pdf`;
-    window.open(exportUrl, '_blank');
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+    const exportUrl = `${apiBaseUrl}/api/video-rooms/${roomId}/export-pdf`;
+    
+    try {
+      // Fetch the PDF as a blob to force a direct download and bypass browser PDF viewers
+      const response = await fetch(exportUrl);
+      if (!response.ok) throw new Error('Failed to download PDF');
+      
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = `session-report-${roomId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      
+      // Cleanup
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (err) {
+      console.error('Error downloading PDF:', err);
+    }
   };
 
   // Leave room
