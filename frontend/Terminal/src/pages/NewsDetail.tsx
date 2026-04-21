@@ -216,7 +216,12 @@ const NewsDetail: React.FC = () => {
                         {/* Featured Image */}
                         {news.image && (
                             <div className="article-image">
-                                <img src={news.image} alt={news.title} />
+                                <img 
+                                    src={`https://images.weserv.nl/?url=${encodeURIComponent(news.image)}`} 
+                                    alt={news.title} 
+                                    referrerPolicy="no-referrer"
+                                    onError={(e) => { (e.currentTarget as HTMLImageElement).parentElement!.style.display = 'none'; }}
+                                />
                             </div>
                         )}
 

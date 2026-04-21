@@ -290,7 +290,12 @@ const NewsFeed: React.FC<NewsFeedProps> = ({ limit, selectedCategory = 'All' }) 
                         </div>
                         {post.image && (
                             <div className="post-image">
-                                <img src={post.image} alt={post.title} />
+                                <img 
+                                    src={`https://images.weserv.nl/?url=${encodeURIComponent(post.image)}`} 
+                                    alt={post.title} 
+                                    referrerPolicy="no-referrer"
+                                    onError={(e) => { (e.currentTarget as HTMLImageElement).parentElement!.style.display = 'none'; }}
+                                />
                             </div>
                         )}
                         <h3 className="post-title">{post.title}</h3>
