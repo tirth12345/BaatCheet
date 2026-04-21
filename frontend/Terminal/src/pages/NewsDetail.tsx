@@ -19,24 +19,14 @@ interface NewsPost {
     url?: string;
 }
 
-const fallbackNews: NewsPost = {
-    id: 1,
-    title: "Breaking: Major Technology Breakthrough Announced",
-    category: "Technology",
-    author: "TechUser123",
-    timestamp: "2 hours ago",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    fullContent: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-    comments: 45,
-    upvotes: 234
-};
+const fallbackNews: NewsPost | null = null;
 
 const NewsDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
     
-    const [news, setNews] = useState<NewsPost>(fallbackNews);
+    const [news, setNews] = useState<NewsPost | null>(fallbackNews);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -70,33 +60,25 @@ const NewsDetail: React.FC = () => {
     const handleBookmark = async () => {
         try {
             const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
-            const index = bookmarks.findIndex((b: any) => b.id === news.id);
+            const index = bookmarks.findIndex((b: any) => b.id === news?.id);
             
             if (index >= 0) {
                 // Remove bookmark
                 bookmarks.splice(index, 1);
             } else {
                 // Add bookmark
-                bookmarks.push({
-                    id: news.id,
-                    title: news.title,
-                    category: news.category,
-                    author: news.author,
-                    timestamp: news.timestamp,
-                    content: news.content,
-                    fullContent: news.fullContent,
-                    comments: news.comments,
-                    upvotes: news.upvotes,
-                    shares: news.shares,
-                    views: news.views,
-                    image: news.image,
-                    url: news.url,
-                    bookmarkedAt: new Date().toISOString()
-                });
+                if (news) {
+                    bookmarks.push({
+                        ...news,
+                        bookmarkedAt: new Date().toISOString()
+                    });
+                }
             }
             
             localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-            setNews(prev => ({ ...prev })); // Trigger re-render
+            if (news) {
+                setNews(prev => prev ? ({ ...prev }) : null);
+            }
         } catch (error) {
             console.error('Error toggling bookmark:', error);
         }
@@ -122,7 +104,7 @@ const NewsDetail: React.FC = () => {
     };
 
     const handleUpvote = async () => {
-        if (hasInteracted(news.id, 'like')) {
+        if (!news || hasInteracted(news.id, 'like')) {
             return;
         }
         try {
@@ -138,6 +120,7 @@ const NewsDetail: React.FC = () => {
     };
 
     const handleShare = async () => {
+        if (!news) return;
         const shareUrl = `${window.location.origin}/news/${news.id}`;
         let shared = false;
 
@@ -215,10 +198,10 @@ const NewsDetail: React.FC = () => {
                     ← Back to News
                 </button>
 
-                {isLoading && <p className="loading">Loading article...</p>}
+                {/* Loading text removed */}
                 {error && <p className="error">{error}</p>}
 
-                {!isLoading && !error && (
+                {!isLoading && !error && news && (
                     <article className="news-detail-article">
                         {/* Article Header */}
                         <div className="article-header">

@@ -16,41 +16,7 @@ interface NewsPost {
     image?: string;
 }
 
-const fallbackPosts: NewsPost[] = [
-    {
-        id: 1,
-        title: "Breaking: Major Technology Breakthrough Announced",
-        category: "Technology",
-        author: "TechUser123",
-        timestamp: "2 hours ago",
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        comments: 45,
-        upvotes: 234,
-        views: 1200
-    },
-    {
-        id: 2,
-        title: "Local Community Comes Together for Charity Event",
-        category: "Community",
-        author: "CommunityHelper",
-        timestamp: "5 hours ago",
-        content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        comments: 23,
-        upvotes: 156,
-        views: 890
-    },
-    {
-        id: 3,
-        title: "Sports Team Wins Championship After Thrilling Match",
-        category: "Sports",
-        author: "SportsFan99",
-        timestamp: "8 hours ago",
-        content: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-        comments: 67,
-        upvotes: 312,
-        views: 2100
-    }
-];
+const fallbackPosts: NewsPost[] = [];
 
 const NewsPost: React.FC<{ 
     post: NewsPost; 
@@ -301,7 +267,7 @@ const News: React.FC = () => {
 
                 {/* News List */}
                 <div className="news-list">
-                    {isLoading && <p className="loading">Loading news...</p>}
+                    {/* Loading message removed API sync */}
                     {error && <p className="error">{error}</p>}
                     <div className="posts-container">
                         {allNews.map(post => (
