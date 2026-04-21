@@ -81,6 +81,13 @@ export default function VideoChatRoom() {
   const isSocketInitializedRef = useRef(false);
   const timerIntervalRef = useRef<number | null>(null);
 
+  // Sync stream to video element when it mounts after loading state
+  useEffect(() => {
+    if (myVideoRef.current && myStream) {
+      myVideoRef.current.srcObject = myStream;
+    }
+  }, [myStream, loading]);
+
   // Initialize user and get media, then connect socket
   useEffect(() => {
     if (!user) {
@@ -128,10 +135,6 @@ export default function VideoChatRoom() {
 
         setMyStream(stream);
         streamRef.current = stream;
-
-        if (myVideoRef.current) {
-          myVideoRef.current.srcObject = stream;
-        }
 
         console.log('Media stream ready, connecting socket...');
 
