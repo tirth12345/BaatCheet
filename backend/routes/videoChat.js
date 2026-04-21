@@ -69,6 +69,7 @@ router.post('/rooms', authenticateUser, async (req, res) => {
       description: description || '',
       maxParticipants: maxParticipants || 4,
       isActive: true,
+      createdBy: req.userId,
     });
 
     await newRoom.save();

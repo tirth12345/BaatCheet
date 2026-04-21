@@ -10,6 +10,9 @@ const videoRoomSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
+  createdBy: {
+    type: String,
+  },
   maxParticipants: {
     type: Number,
     default: 4,

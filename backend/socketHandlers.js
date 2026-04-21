@@ -235,64 +235,89 @@ module.exports = function(io) {
     });
 
     // Handle user leaving
-    socket.on('disconnect', async () => {
+    const handleUserLeave = async (socketId, userInfo) => {
       try {
-        const userInfo = activeConnections.get(socket.id);
+        if (!userInfo) return;
+        const { roomId, userId } = userInfo;
+        const participants = roomParticipants.get(roomId);
         
-        if (userInfo) {
-          const { roomId } = userInfo;
-          const participants = roomParticipants.get(roomId);
-          
-          if (participants) {
-            participants.delete(socket.id);
-            
-            // Notify others that user left
-            io.to(roomId).emit('user-left', {
-              socketId: socket.id,
-              totalParticipants: participants.size,
-            });
+        // Remove from local participants state and emit to others
+        if (participants && participants.has(socketId)) {
+          participants.delete(socketId);
+          io.to(roomId).emit('user-left', {
+            socketId: socketId,
+            totalParticipants: participants.size,
+          });
+        }
 
-            // Clean up empty rooms
-            if (participants.size === 0) {
-              roomParticipants.delete(roomId);
-              // Clear timers if room is empty
-              const timers = roomExpirations.get(roomId);
-              if (timers) {
-                if (timers.timer) clearTimeout(timers.timer);
-                if (timers.warningTimer) clearTimeout(timers.warningTimer);
-                roomExpirations.delete(roomId);
-              }
+        // Check if owner left
+        let roomData = null;
+        try {
+          roomData = await VideoRoom.findById(roomId);
+        } catch (err) {}
+        
+        const isOwner = roomData && roomData.createdBy && roomData.createdBy === userId;
+
+        if (isOwner) {
+          // Owner left completely: kill the room
+          if (roomData.isActive) {
+            roomData.isActive = false;
+            await roomData.save();
+            io.to(roomId).emit('room-expired', {
+              message: 'The room owner has ended the video chat.'
+            });
+            io.emit('rooms-updated'); // refresh UI everywhere
+          }
+          
+          // Boot other participants
+          if (participants) {
+            for (const sid of participants) {
+              const s = io.sockets.sockets.get(sid);
+              if (s && s.id !== socketId) s.disconnect();
             }
           }
-
-          activeConnections.delete(socket.id);
-          console.log(`User disconnected from room ${roomId}`);
+          
+          roomParticipants.delete(roomId);
+          const timers = roomExpirations.get(roomId);
+          if (timers) {
+            if (timers.timer) clearTimeout(timers.timer);
+            if (timers.warningTimer) clearTimeout(timers.warningTimer);
+            roomExpirations.delete(roomId);
+          }
+        } else if (participants && participants.size === 0) {
+          // Not owner, but room is empty so clean it up anyway
+          roomParticipants.delete(roomId);
+          const timers = roomExpirations.get(roomId);
+          if (timers) {
+            if (timers.timer) clearTimeout(timers.timer);
+            if (timers.warningTimer) clearTimeout(timers.warningTimer);
+            roomExpirations.delete(roomId);
+          }
+          if (roomData && roomData.isActive) {
+            roomData.isActive = false;
+            await roomData.save();
+            io.emit('rooms-updated');
+          }
         }
+
+        activeConnections.delete(socketId);
       } catch (error) {
-        console.error('Error handling disconnect:', error);
+        console.error('Error handling user leave:', error);
       }
+    };
+
+    // Handle user leaving via disconnection
+    socket.on('disconnect', async () => {
+      const userInfo = activeConnections.get(socket.id);
+      await handleUserLeave(socket.id, userInfo);
+      console.log(`User disconnected`);
     });
 
-    // Handle explicit leave
-    socket.on('leave-room', (data) => {
-      const { roomId } = data;
-      const participants = roomParticipants.get(roomId);
-      
-      if (participants) {
-        participants.delete(socket.id);
-        
-        io.to(roomId).emit('user-left', {
-          socketId: socket.id,
-          totalParticipants: participants.size,
-        });
-
-        if (participants.size === 0) {
-          roomParticipants.delete(roomId);
-        }
-      }
-
-      socket.leave(roomId);
-      activeConnections.delete(socket.id);
+    // Handle explicit leave button
+    socket.on('leave-room', async (data) => {
+      const userInfo = activeConnections.get(socket.id) || { roomId: data.roomId };
+      await handleUserLeave(socket.id, userInfo);
+      socket.leave(data.roomId);
     });
   });
 };

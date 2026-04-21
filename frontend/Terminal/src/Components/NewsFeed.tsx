@@ -26,38 +26,7 @@ const NewsFeed: React.FC<NewsFeedProps> = ({ limit, selectedCategory = 'All' }) 
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState<string>('');
 
-    const fallbackPosts: NewsPost[] = [
-        {
-            id: 1,
-            title: "Breaking: Major Technology Breakthrough Announced",
-            category: "Technology",
-            author: "TechUser123",
-            timestamp: "2 hours ago",
-            content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-            comments: 45,
-            upvotes: 234
-        },
-        {
-            id: 2,
-            title: "Local Community Comes Together for Charity Event",
-            category: "Community",
-            author: "CommunityHelper",
-            timestamp: "5 hours ago",
-            content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.",
-            comments: 23,
-            upvotes: 156
-        },
-        {
-            id: 3,
-            title: "Sports Team Wins Championship After Thrilling Match",
-            category: "Sports",
-            author: "SportsFan99",
-            timestamp: "8 hours ago",
-            content: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-            comments: 67,
-            upvotes: 312
-        }
-    ];
+    const fallbackPosts: NewsPost[] = [];
 
     const [newsPosts, setNewsPosts] = useState<NewsPost[]>(fallbackPosts);
     const [isLoading, setIsLoading] = useState(false);
@@ -293,7 +262,7 @@ const NewsFeed: React.FC<NewsFeedProps> = ({ limit, selectedCategory = 'All' }) 
                 </div> */}
             </div>
 
-            {isLoading && <p>Loading latest news...</p>}
+            {/* Loading text removed as per user request */}
             
             {/* add <p>Catch up on breaking stories and trending discussions.</p> */}
             {error && <p>{error}</p>}
