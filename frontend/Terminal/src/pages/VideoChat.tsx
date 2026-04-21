@@ -60,7 +60,8 @@ export default function VideoChat() {
   const fetchRooms = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:5001/api/video-chat/rooms');
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+      const response = await fetch(`${apiBaseUrl}/api/video-chat/rooms`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch rooms');
@@ -88,7 +89,8 @@ export default function VideoChat() {
       setCreating(true);
       setCreateError('');
 
-      const response = await fetch('http://localhost:5001/api/video-chat/rooms', {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+      const response = await fetch(`${apiBaseUrl}/api/video-chat/rooms`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
