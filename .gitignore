@@ -1,0 +1,47 @@
+# BaatCheet — Root .gitignore
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment files (NEVER commit these)
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Uploads (local file storage - not committed)
+backend/uploads/
+
+# Python virtualenv (if applicable)
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Backup folders
+frontend/Terminal_backup/

@@ -1,0 +1,127 @@
+/* =========================================================================
+   CORE DESIGN SYSTEM TOKENS - GLASSMORPHISM DARK THEME
+   ========================================================================= */
+:root {
+  /* Typography */
+  --font-family-sans: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  
+  /* Color Palette */
+  --bg-dark: #07090f;
+  --bg-card: rgba(18, 22, 33, 0.45);
+  --bg-card-hover: rgba(26, 31, 46, 0.65);
+  
+  --accent-primary: #00f0ff;    /* Neon Cyan */
+  --accent-primary-hover: #33f3ff;
+  --accent-secondary: #8a2be2;  /* Electric Purple */
+  --accent-tertiary: #ff0055;   /* Neon Pink */
+  
+  /* Text */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  /* Structural */
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glass-bright: rgba(255, 255, 255, 0.15);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+  
+  /* Physics & Effects */
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-neon: 0 0 15px rgba(0, 240, 255, 0.4);
+  --shadow-neon-purple: 0 0 15px rgba(138, 43, 226, 0.4);
+  
+  --glass-blur: blur(12px);
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 400ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* =========================================================================
+   BASE STYLES
+   ========================================================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: var(--font-family-sans);
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+a {
+  color: var(--accent-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  text-decoration: none;
+  color: var(--accent-primary-hover);
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+}
+
+button {
+  font-family: var(--font-family-sans);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+/* Global Gradient Animation Background */
+.animated-bg {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 50% 50%, rgba(138,43,226,0.08) 0%, transparent 40%),
+              radial-gradient(circle at 80% 20%, rgba(0,240,255,0.06) 0%, transparent 35%);
+  z-index: -1;
+  pointer-events: none;
+  animation: rotateGradient 60s linear infinite;
+}
+
+@keyframes rotateGradient {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Base Glassmorphism utility class */
+.glass-panel {
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-glass);
+}
