@@ -85,7 +85,7 @@ const NewsDetail: React.FC = () => {
     };
 
     const updateNewsStats = (stats: Partial<NewsPost>) => {
-        setNews(prev => ({ ...prev, ...stats }));
+        setNews(prev => prev ? { ...prev, ...stats } : null);
     };
 
     const incrementView = (newsId: number) => {

@@ -310,7 +310,7 @@ async function fetchNewsFromAPI(params = {}) {
             return dbNews;
         }
         // Return fallback news if database is also empty
-        return getFallbackNews();
+        return [];
     }
 }
 
