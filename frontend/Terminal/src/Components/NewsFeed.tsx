@@ -29,7 +29,7 @@ const NewsFeed: React.FC<NewsFeedProps> = ({ limit, selectedCategory = 'All' }) 
     const fallbackPosts: NewsPost[] = [];
 
     const [newsPosts, setNewsPosts] = useState<NewsPost[]>(fallbackPosts);
-    const [isLoading, setIsLoading] = useState(false);
+    const [, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {

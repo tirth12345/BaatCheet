@@ -78,7 +78,7 @@ const News: React.FC = () => {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
     const navigate = useNavigate();
     const [allNews, setAllNews] = useState<NewsPost[]>(fallbackPosts);
-    const [isLoading, setIsLoading] = useState(false);
+    const [, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showArchived, setShowArchived] = useState(false);
 
